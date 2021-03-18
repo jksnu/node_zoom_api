@@ -76,6 +76,88 @@ async function createZoomMeeting(req, res, next) {
     }
 }
 
+async function updateMeeting(req, res, next) {
+    try { 
+        const token = req.body.token;
+        const meetingId = req.body.meetingId;
+        const result = await axios.patch("https://api.zoom.us/v2/meetings/"+meetingId, {
+            "topic": "UPDATE: Discussion about today's Demo",
+            "type": 2,
+            "start_time": "2021-03-18T17:00:00",
+            "duration": 20,
+            "timezone": "India",
+            "password": "1234567",
+            "agenda": "Discussion about how to update zoome meeting programatically",
+            "settings": {
+                "host_video": true,
+                "participant_video": true,
+                "cn_meeting": false,
+                "in_meeting": true,
+                "join_before_host": false,
+                "mute_upon_entry": false,
+                "watermark": false,
+                "use_pmi": false,
+                "approval_type": 2,
+                "audio": "both",
+                "auto_recording": "local",
+                "enforce_login": false,                
+                "registrants_email_notification": false,
+                "waiting_room": true,
+                "allow_multiple_devices": true
+            }
+        }, {          
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'User-Agent': 'Zoom-api-Jwt-Request',
+                'content-type': 'application/json'
+            }
+        });
+        sendResponse.setSuccess(200, 'Success', result.data);
+        return sendResponse.send(res);   
+    } catch (error) {
+        console.log(error.message);
+        next();
+    }
+}
+
+async function deleteMeeting(req, res, next) {
+    try { 
+        const token = req.body.token;
+        const meetingId = req.body.meetingId;
+        const result = await axios.delete("https://api.zoom.us/v2/meetings/"+meetingId, {          
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'User-Agent': 'Zoom-api-Jwt-Request',
+                'content-type': 'application/json'
+            }
+        });
+        sendResponse.setSuccess(200, 'Success', result.data);
+        return sendResponse.send(res);   
+    } catch (error) {
+        console.log(error.message);
+        next();
+    }
+}
+
+async function getMeeting(req, res, next) {
+    try { 
+        const token = req.body.token;
+        const meetingId = req.body.meetingId;
+        const result = await axios.get("https://api.zoom.us/v2/meetings/"+meetingId, {          
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'User-Agent': 'Zoom-api-Jwt-Request',
+                'content-type': 'application/json'
+            }
+        });
+        sendResponse.setSuccess(200, 'Success', result.data);
+        return sendResponse.send(res);   
+    } catch (error) {
+        console.log(error.message);
+        next();
+    }
+}
+
 /*function zoomuserInfo(req, res, next) {
     try{
         const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6InNMWVAzNEVYUTdTRFMtUHVlV2NrX3ciLCJleHAiOjE2MTY2NTIzNDUsImlhdCI6MTYxNjA0NzU0Nn0.QI_-K6MN5FXaRyVJvNfBQ9VbVfSU-re60SQF6_QmNeY';
@@ -121,4 +203,4 @@ async function createZoomMeeting(req, res, next) {
     }
 }*/
 
-module.exports = { healthCheck, zoomuserInfo, createZoomMeeting }
+module.exports = { healthCheck, zoomuserInfo, createZoomMeeting, getMeeting, updateMeeting, deleteMeeting }
